@@ -3,46 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#0d1117">
+  <meta name="theme-color" content="#030712">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Todo Master • Android</title>
+  <title>Todo Glass • Android</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0f17;
-      --surface: #141b27;
-      --surface-card: #1c2536;
-      --surface-hover: #263248;
-      --border: rgba(255, 255, 255, 0.08);
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg: #030712;
+      --glass-surface: rgba(255, 255, 255, 0.04);
+      --glass-card: rgba(255, 255, 255, 0.06);
+      --glass-card-hover: rgba(255, 255, 255, 0.09);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-highlight: rgba(255, 255, 255, 0.22);
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
       --primary: #38bdf8;
-      --primary-glow: rgba(56, 189, 248, 0.25);
-      --accent: #818cf8;
+      --primary-glow: rgba(56, 189, 248, 0.35);
+      --accent: #a855f7;
+      --accent-glow: rgba(168, 85, 247, 0.35);
       --priority-high: #f43f5e;
       --priority-med: #fbbf24;
       --priority-low: #34d399;
-      --radius-sm: 10px;
-      --radius-md: 16px;
-      --radius-lg: 24px;
-      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
     }
 
     .light-theme {
-      --bg: #f1f5f9;
-      --surface: #ffffff;
-      --surface-card: #f8fafc;
-      --surface-hover: #e2e8f0;
-      --border: rgba(0, 0, 0, 0.08);
+      --bg: #e2e8f0;
+      --glass-surface: rgba(255, 255, 255, 0.65);
+      --glass-card: rgba(255, 255, 255, 0.75);
+      --glass-card-hover: rgba(255, 255, 255, 0.9);
+      --glass-border: rgba(255, 255, 255, 0.5);
+      --glass-highlight: rgba(255, 255, 255, 0.8);
       --text: #0f172a;
       --text-muted: #64748b;
       --primary: #0284c7;
-      --primary-glow: rgba(2, 132, 199, 0.2);
-      --accent: #6366f1;
-      --shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.1);
+      --primary-glow: rgba(2, 132, 199, 0.25);
+      --accent: #7c3aed;
     }
 
     * {
@@ -60,10 +61,54 @@
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      transition: background-color 0.3s ease;
+      position: relative;
       overflow-x: hidden;
     }
 
+    /* AMBIENT GLOWING LIQUID ORBS */
+    .ambient-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.45;
+      animation: floatOrb 16s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, #38bdf8 0%, rgba(56,189,248,0) 70%);
+      top: -60px;
+      left: -60px;
+    }
+
+    .orb-2 {
+      width: 340px;
+      height: 340px;
+      background: radial-gradient(circle, #a855f7 0%, rgba(168,85,247,0) 70%);
+      bottom: 40px;
+      right: -80px;
+      animation-duration: 20s;
+    }
+
+    .orb-3 {
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, #06b6d4 0%, rgba(6,182,212,0) 70%);
+      top: 40%;
+      left: 30%;
+      animation-duration: 14s;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, 40px) scale(1.1); }
+      100% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    /* MAIN CONTAINER (GLASS APP SHELL) */
     .app-shell {
       width: 100%;
       max-width: 480px;
@@ -71,9 +116,8 @@
       display: flex;
       flex-direction: column;
       position: relative;
-      background: var(--surface);
-      box-shadow: 0 0 50px rgba(0,0,0,0.3);
-      padding-bottom: 90px;
+      z-index: 10;
+      padding-bottom: 100px;
     }
 
     /* HEADER */
@@ -82,12 +126,14 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      z-index: 20;
-      backdrop-filter: blur(12px);
+      z-index: 30;
+      backdrop-filter: blur(20px) saturate(190%);
+      -webkit-backdrop-filter: blur(20px) saturate(190%);
+      background: var(--glass-surface);
+      border-bottom: 1px solid var(--glass-border);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
     }
 
     .top-bar {
@@ -103,6 +149,16 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      background: linear-gradient(135deg, #ffffff 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .light-theme .app-title-group h1 {
+      background: linear-gradient(135deg, #0f172a 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .app-title-group p {
@@ -112,35 +168,40 @@
       font-weight: 500;
     }
 
-    .icon-btn {
+    .glass-btn {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--surface-card);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       color: var(--text);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.2s ease;
+      box-shadow: inset 0 1px 1px var(--glass-highlight);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .icon-btn:active {
+    .glass-btn:active {
       transform: scale(0.92);
-      background: var(--surface-hover);
+      background: var(--glass-card-hover);
     }
 
-    /* PROGRESS CARD */
-    .progress-card {
-      background: linear-gradient(135deg, var(--surface-card) 0%, var(--surface-hover) 100%);
-      border: 1px solid var(--border);
+    /* PROGRESS GLASS CARD */
+    .glass-progress {
+      background: var(--glass-card);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
-      padding: 16px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: var(--shadow);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 1px var(--glass-highlight);
     }
 
     .progress-info h2 {
@@ -157,7 +218,7 @@
     .progress-bar-wrap {
       width: 100%;
       height: 6px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.08);
       border-radius: 999px;
       margin-top: 10px;
       overflow: hidden;
@@ -168,18 +229,20 @@
       background: linear-gradient(90deg, var(--primary), var(--accent));
       border-radius: 999px;
       width: 0%;
-      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 12px var(--primary-glow);
+      transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .progress-percent {
-      font-family: 'Space Mono', monospace;
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 22px;
+      font-weight: 800;
       color: var(--primary);
       margin-left: 16px;
+      font-family: 'Space Grotesk', sans-serif;
+      text-shadow: 0 0 20px var(--primary-glow);
     }
 
-    /* SEARCH & FILTER */
+    /* SEARCH BAR */
     .search-box {
       margin: 16px 20px 8px 20px;
       position: relative;
@@ -188,17 +251,21 @@
     .search-input {
       width: 100%;
       padding: 12px 16px 12px 42px;
-      background: var(--surface-card);
-      border: 1px solid var(--border);
+      background: var(--glass-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-sm);
       color: var(--text);
       font-size: 14px;
       outline: none;
-      transition: border-color 0.2s;
+      box-shadow: inset 0 1px 1px var(--glass-highlight);
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
 
     .search-input:focus {
       border-color: var(--primary);
+      box-shadow: 0 0 16px var(--primary-glow), inset 0 1px 1px var(--glass-highlight);
     }
 
     .search-icon {
@@ -210,7 +277,7 @@
       pointer-events: none;
     }
 
-    /* FILTER PILLS */
+    /* FILTER PILLS (FROSTED GLASS) */
     .filter-scroll {
       display: flex;
       gap: 8px;
@@ -224,23 +291,26 @@
     }
 
     .pill {
-      padding: 6px 14px;
+      padding: 7px 15px;
       border-radius: 20px;
-      background: var(--surface-card);
-      border: 1px solid var(--border);
+      background: var(--glass-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
       font-size: 12px;
       font-weight: 600;
       color: var(--text-muted);
       cursor: pointer;
       white-space: nowrap;
+      box-shadow: inset 0 1px 1px var(--glass-highlight);
       transition: all 0.2s ease;
     }
 
     .pill.active {
-      background: var(--primary);
-      color: #0b0f17;
-      border-color: var(--primary);
-      box-shadow: 0 4px 12px var(--primary-glow);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #030712;
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 4px 15px var(--primary-glow);
     }
 
     /* TASK LIST */
@@ -248,7 +318,7 @@
       padding: 12px 20px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       flex: 1;
     }
 
@@ -263,70 +333,62 @@
     }
 
     .empty-icon {
-      font-size: 48px;
+      font-size: 52px;
       margin-bottom: 12px;
-      opacity: 0.6;
+      opacity: 0.7;
+      filter: drop-shadow(0 0 16px var(--primary-glow));
     }
 
-    .empty-state h3 {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-
-    .empty-state p {
-      font-size: 13px;
-    }
-
-    /* TASK ITEM */
+    /* TASK CARD (GLASSMORPHIC) */
     .task-card {
-      background: var(--surface-card);
-      border: 1px solid var(--border);
+      background: var(--glass-card);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
       padding: 14px 16px;
       display: flex;
       align-items: flex-start;
-      gap: 12px;
+      gap: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18), inset 0 1px 1px var(--glass-highlight);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
     }
 
     .task-card:active {
       transform: scale(0.98);
+      background: var(--glass-card-hover);
     }
 
     .task-card.completed {
-      opacity: 0.55;
-      background: var(--surface);
+      opacity: 0.5;
+      filter: grayscale(0.5);
     }
 
     .custom-checkbox {
       width: 22px;
       height: 22px;
-      border-radius: 7px;
-      border: 2px solid var(--text-muted);
+      border-radius: 8px;
+      border: 1.5px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.05);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
       margin-top: 2px;
+      box-shadow: inset 0 1px 1px var(--glass-highlight);
       transition: all 0.2s ease;
     }
 
-    .custom-checkbox:hover {
-      border-color: var(--primary);
-    }
-
     .task-card.completed .custom-checkbox {
-      background: var(--primary);
-      border-color: var(--primary);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 12px var(--primary-glow);
     }
 
     .checkmark {
       display: none;
-      color: #0b0f17;
+      color: #030712;
       font-size: 13px;
       font-weight: 900;
     }
@@ -344,11 +406,10 @@
     }
 
     .task-title {
-      font-size: 14.5px;
+      font-size: 15px;
       font-weight: 600;
       line-height: 1.35;
       color: var(--text);
-      transition: color 0.2s;
     }
 
     .task-card.completed .task-title {
@@ -369,7 +430,8 @@
       font-weight: 600;
       padding: 2px 8px;
       border-radius: 6px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
       color: var(--text-muted);
     }
 
@@ -380,28 +442,19 @@
       flex-shrink: 0;
     }
 
-    .priority-high { background-color: var(--priority-high); }
-    .priority-med { background-color: var(--priority-med); }
-    .priority-low { background-color: var(--priority-low); }
+    .priority-high { background-color: var(--priority-high); box-shadow: 0 0 8px rgba(244,63,94,0.6); }
+    .priority-med { background-color: var(--priority-med); box-shadow: 0 0 8px rgba(251,191,36,0.6); }
+    .priority-low { background-color: var(--priority-low); box-shadow: 0 0 8px rgba(52,211,153,0.6); }
 
     .date-badge {
       font-size: 11px;
       font-weight: 500;
       color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 4px;
     }
 
     .date-badge.overdue {
       color: var(--priority-high);
       font-weight: 700;
-    }
-
-    .task-actions {
-      display: flex;
-      align-items: center;
-      gap: 4px;
     }
 
     .delete-btn {
@@ -420,25 +473,25 @@
       color: var(--priority-high);
     }
 
-    /* FLOATING ACTION BUTTON (FAB) */
+    /* FLOATING LIQUID GLASS ACTION BUTTON (FAB) */
     .fab-btn {
       position: fixed;
       bottom: 24px;
       right: calc(50% - 240px + 20px);
-      width: 58px;
-      height: 58px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: #0b0f17;
-      border: none;
+      color: #030712;
+      border: 1px solid rgba(255, 255, 255, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 700;
-      box-shadow: 0 10px 25px var(--primary-glow);
+      box-shadow: 0 10px 30px var(--primary-glow), inset 0 2px 2px rgba(255, 255, 255, 0.4);
       cursor: pointer;
-      z-index: 30;
+      z-index: 40;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -449,18 +502,19 @@
     }
 
     .fab-btn:active {
-      transform: scale(0.9);
+      transform: scale(0.92);
     }
 
-    /* MODAL BOTTOM SHEET */
+    /* GLASS BOTTOM SHEET MODAL */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
+      background: rgba(3, 7, 18, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: none;
       justify-content: center;
       align-items: flex-end;
@@ -477,12 +531,14 @@
     .modal-sheet {
       width: 100%;
       max-width: 480px;
-      background: var(--surface);
+      background: var(--glass-card);
+      backdrop-filter: blur(32px) saturate(200%);
+      -webkit-backdrop-filter: blur(32px) saturate(200%);
       border-top-left-radius: var(--radius-lg);
       border-top-right-radius: var(--radius-lg);
-      padding: 24px 20px 32px 20px;
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
-      border: 1px solid var(--border);
+      padding: 24px 20px 36px 20px;
+      box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.6), inset 0 1px 1px var(--glass-highlight);
+      border: 1px solid var(--glass-border);
       border-bottom: none;
       transform: translateY(100%);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -495,6 +551,15 @@
       transform: translateY(0);
     }
 
+    .modal-handle {
+      width: 44px;
+      height: 5px;
+      background: var(--glass-border);
+      border-radius: 999px;
+      align-self: center;
+      margin-bottom: 4px;
+    }
+
     .modal-header {
       display: flex;
       justify-content: space-between;
@@ -502,8 +567,9 @@
     }
 
     .modal-header h3 {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
     }
 
     .close-modal {
@@ -517,17 +583,21 @@
     .task-input-field {
       width: 100%;
       padding: 14px 16px;
-      background: var(--surface-card);
-      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-sm);
       color: var(--text);
       font-size: 15px;
       outline: none;
+      box-shadow: inset 0 1px 1px var(--glass-highlight);
       user-select: text;
     }
 
     .task-input-field:focus {
       border-color: var(--primary);
+      box-shadow: 0 0 14px var(--primary-glow), inset 0 1px 1px var(--glass-highlight);
     }
 
     .modal-row {
@@ -538,8 +608,8 @@
     .modal-select {
       flex: 1;
       padding: 10px 14px;
-      background: var(--surface-card);
-      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-sm);
       color: var(--text);
       font-size: 13px;
@@ -551,11 +621,12 @@
       padding: 14px;
       border-radius: var(--radius-sm);
       background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: #0b0f17;
-      border: none;
+      color: #030712;
+      border: 1px solid rgba(255, 255, 255, 0.3);
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
+      box-shadow: 0 6px 20px var(--primary-glow);
       margin-top: 8px;
       transition: transform 0.15s;
     }
@@ -564,15 +635,17 @@
       transform: scale(0.97);
     }
 
-    /* FOOTER STATS */
+    /* FOOTER */
     .footer-tools {
       padding: 16px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--glass-border);
       font-size: 12px;
       color: var(--text-muted);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
     .footer-btn {
@@ -587,24 +660,29 @@
 </head>
 <body>
 
+  <!-- AMBIENT GLOW ORBS -->
+  <div class="ambient-orb orb-1"></div>
+  <div class="ambient-orb orb-2"></div>
+  <div class="ambient-orb orb-3"></div>
+
   <div class="app-shell">
-    <!-- HEADER -->
+    <!-- GLASS HEADER -->
     <header>
       <div class="top-bar">
         <div class="app-title-group">
-          <h1>✓ Todo Master</h1>
+          <h1>✦ Todo Glass</h1>
           <p id="todayDate">Loading date...</p>
         </div>
         <div style="display: flex; gap: 8px;">
-          <button class="icon-btn" onclick="toggleTheme()" title="Toggle Dark/Light">◐</button>
-          <button class="icon-btn" onclick="exportData()" title="Backup / Export JSON">⤓</button>
+          <button class="glass-btn" onclick="toggleTheme()" title="Toggle Dark/Light">◐</button>
+          <button class="glass-btn" onclick="exportData()" title="Backup / Export JSON">⤓</button>
         </div>
       </div>
 
-      <!-- PROGRESS SUMMARY -->
-      <div class="progress-card">
+      <!-- PROGRESS GLASS CARD -->
+      <div class="glass-progress">
         <div class="progress-info" style="flex: 1;">
-          <h2>Daily Completion</h2>
+          <h2>Daily Progress</h2>
           <p id="taskStats">0 of 0 tasks completed</p>
           <div class="progress-bar-wrap">
             <div class="progress-bar-fill" id="progressBar"></div>
@@ -631,9 +709,7 @@
     </div>
 
     <!-- TASK LIST -->
-    <div class="task-list" id="taskList">
-      <!-- Tasks rendered dynamically -->
-    </div>
+    <div class="task-list" id="taskList"></div>
 
     <!-- FOOTER ACTIONS -->
     <div class="footer-tools">
@@ -641,13 +717,14 @@
       <button class="footer-btn" onclick="clearCompleted()">Clear Completed</button>
     </div>
 
-    <!-- FAB ADD BUTTON -->
+    <!-- FLOATING LIQUID GLASS BUTTON -->
     <button class="fab-btn" onclick="openModal()">+</button>
   </div>
 
-  <!-- ADD TASK MODAL (BOTTOM SHEET) -->
+  <!-- ADD TASK GLASS MODAL -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
     <div class="modal-sheet">
+      <div class="modal-handle"></div>
       <div class="modal-header">
         <h3>New Task</h3>
         <button class="close-modal" onclick="closeModal()">✕</button>
@@ -680,11 +757,9 @@
   </div>
 
   <script>
-    // State
     let tasks = [];
     let currentFilter = 'all';
 
-    // Synthetic Sound via Web Audio API (Haptic/Click sound)
     function playTapSound(freq = 600) {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -701,24 +776,22 @@
       } catch (e) {}
     }
 
-    // Storage
     function loadTasks() {
-      const saved = localStorage.getItem('todo_master_tasks');
+      const saved = localStorage.getItem('todo_glass_tasks');
       if (saved) {
         try { tasks = JSON.parse(saved); } catch (e) { tasks = []; }
       } else {
-        // Welcome sample tasks
         tasks = [
-          { id: '1', title: 'Welcome to Todo Master for Android 🚀', category: 'General', priority: 'high', dueDate: new Date().toISOString().split('T')[0], completed: false },
-          { id: '2', title: 'Tap the checkbox to complete a task', category: 'Personal', priority: 'med', dueDate: '', completed: true },
-          { id: '3', title: 'Tap the + button to add your own tasks', category: 'Work', priority: 'low', dueDate: '', completed: false }
+          { id: '1', title: 'Welcome to Todo Glass for Android ✨', category: 'General', priority: 'high', dueDate: new Date().toISOString().split('T')[0], completed: false },
+          { id: '2', title: 'Tap the glowing glass checkbox to complete', category: 'Personal', priority: 'med', dueDate: '', completed: true },
+          { id: '3', title: 'Tap the + liquid button to create tasks', category: 'Work', priority: 'low', dueDate: '', completed: false }
         ];
         saveTasks();
       }
     }
 
     function saveTasks() {
-      localStorage.setItem('todo_master_tasks', JSON.stringify(tasks));
+      localStorage.setItem('todo_glass_tasks', JSON.stringify(tasks));
       renderTasks();
     }
 
@@ -733,14 +806,14 @@
       const task = tasks.find(t => t.id === id);
       if (task) {
         task.completed = !task.completed;
-        playTapSound(task.completed ? 800 : 400);
+        playTapSound(task.completed ? 840 : 420);
         saveTasks();
       }
     }
 
     function deleteTask(id, e) {
       e.stopPropagation();
-      playTapSound(300);
+      playTapSound(280);
       tasks = tasks.filter(t => t.id !== id);
       saveTasks();
     }
@@ -758,10 +831,7 @@
       listEl.innerHTML = '';
 
       let filtered = tasks.filter(t => {
-        // Search filter
         if (searchVal && !t.title.toLowerCase().includes(searchVal)) return false;
-
-        // Tab filter
         if (currentFilter === 'all') return true;
         if (currentFilter === 'active') return !t.completed;
         if (currentFilter === 'completed') return t.completed;
@@ -774,9 +844,9 @@
       if (filtered.length === 0) {
         listEl.innerHTML = `
           <div class="empty-state">
-            <div class="empty-icon">📝</div>
-            <h3>No tasks found</h3>
-            <p>Tap + below to create a new task!</p>
+            <div class="empty-icon">✦</div>
+            <h3>No tasks here</h3>
+            <p>Tap + to add a frosted glass task!</p>
           </div>
         `;
       } else {
@@ -787,7 +857,6 @@
 
           const priorityClass = task.priority === 'high' ? 'priority-high' : (task.priority === 'med' ? 'priority-med' : 'priority-low');
 
-          // Date calculation
           let dateHtml = '';
           if (task.dueDate) {
             const today = new Date().toISOString().split('T')[0];
@@ -834,7 +903,6 @@
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
-    // Modal
     function openModal() {
       document.getElementById('modalOverlay').classList.add('active');
       document.getElementById('modalTaskInput').value = '';
@@ -873,41 +941,36 @@
       closeModal();
     }
 
-    // Enter key inside modal
     document.getElementById('modalTaskInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') addTaskFromModal();
     });
 
-    // Theme toggle
     function toggleTheme() {
       document.body.classList.toggle('light-theme');
       const isLight = document.body.classList.contains('light-theme');
-      localStorage.setItem('todo_theme', isLight ? 'light' : 'dark');
+      localStorage.setItem('todo_glass_theme', isLight ? 'light' : 'dark');
     }
 
     function initTheme() {
-      const saved = localStorage.getItem('todo_theme');
+      const saved = localStorage.getItem('todo_glass_theme');
       if (saved === 'light') document.body.classList.add('light-theme');
     }
 
-    // Export Data
     function exportData() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `todo_backup_${new Date().toISOString().split('T')[0]}.json`);
+      downloadAnchor.setAttribute("download", `todo_glass_backup_${new Date().toISOString().split('T')[0]}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
     }
 
-    // Format current date
     function renderDate() {
       const options = { weekday: 'long', month: 'short', day: 'numeric' };
       document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-US', options);
     }
 
-    // Init
     initTheme();
     renderDate();
     loadTasks();

@@ -21,37 +21,30 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
 
-    - name: Setup Gradle
+    - name: Setup Gradle 8.5
       uses: gradle/actions/setup-gradle@v3
-
-    - name: Grant Execute Permission for Gradlew
-      run: |
-        if [ ! -f "gradlew" ]; then
-          gradle wrapper
-        fi
-        chmod +x gradlew
+      with:
+        gradle-version: '8.5'
 
     - name: Build Debug APK
-      run: ./gradlew assembleDebug --stacktrace
+      run: gradle assembleDebug --stacktrace
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: TodoMaster-Debug-APK
+        name: TodoGlass-APK
         path: app/build/outputs/apk/debug/*.apk
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
-      if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
       with:
         tag_name: v1.0.${{ github.run_number }}
-        name: Todo Master v1.0.${{ github.run_number }}
+        name: Todo Glass v1.0.${{ github.run_number }}
         body: |
-          ### 📱 Todo Master for Android
-          - **Download:** Grab the `.apk` file below and install directly on your Android phone!
-          - Built with offline storage, categories, priority badges, and OLED dark mode.
+          ### 📱 Todo Glass for Android (APK)
+          - **Download:** Download `app-debug.apk` below and install directly on your Android phone!
+          - Features stunning Liquid Glassmorphism UI, offline storage, category tags, priority indicators, and dark mode.
         files: app/build/outputs/apk/debug/*.apk
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
