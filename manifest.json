@@ -1,0 +1,18 @@
+{
+  "name": "Todo Master",
+  "short_name": "TodoMaster",
+  "description": "Offline-ready Todo List software for Android",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0f17",
+  "theme_color": "#0b0f17",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
